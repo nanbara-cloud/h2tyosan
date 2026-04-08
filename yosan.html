@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEO事業部 ４期分予算計画</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#FFFFFF;--bg2:#F7F8FA;--bg3:#EEF1F5;
+  --navy:#1A2B3C;--navy2:#243447;
+  --gold:#C8860A;--gold-lt:#F5A623;
+  --teal:#0891B2;--blue:#2563EB;--green:#059669;--red:#DC2626;
+  --text:#1A2B3C;--text2:#64748B;--text3:#94A3B8;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.04);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
+
+/* HERO */
+.hero{background:var(--navy);color:#fff;padding:64px 24px 72px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.hero-glow{position:absolute;top:-100px;right:-100px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,0.15) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-block;padding:4px 18px;background:rgba(245,166,35,0.13);border:1px solid rgba(245,166,35,0.38);border-radius:50px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-lt);margin-bottom:22px;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,7vw,84px);letter-spacing:3px;line-height:1;color:#fff;position:relative;}
+.hero h1 em{color:var(--gold-lt);font-style:normal;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:3px;margin-top:14px;}
+.hero-line{width:56px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));margin:28px auto;}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;max-width:960px;margin:0 auto;position:relative;}
+.kpi-card{background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:18px 12px;text-align:center;transition:transform .2s,background .2s;}
+.kpi-card:hover{transform:translateY(-3px);background:rgba(255,255,255,0.08);}
+.kpi-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:7px;}
+.kpi-value{font-family:'Montserrat',sans-serif;font-weight:900;font-size:23px;color:var(--gold-lt);}
+.kpi-unit{font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px;}
+
+/* SECTIONS */
+.section{padding:60px 24px;max-width:1280px;margin:0 auto;}
+.alt-wrap{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.alt-wrap .section{padding-top:56px;padding-bottom:56px;}
+.sec-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.sec-tag::before{content:'';display:inline-block;width:24px;height:2px;background:var(--gold);}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,4vw,44px);letter-spacing:2px;color:var(--navy);margin-bottom:36px;line-height:1.1;}
+.sec-title em{color:var(--gold);font-style:normal;}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;box-shadow:var(--shadow);}
+.card-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:18px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:860px){.grid-2{grid-template-columns:1fr;}}
+canvas{max-height:290px;}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{padding:6px 17px;background:#fff;border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;}
+.tab-btn:hover{border-color:var(--gold);color:var(--gold);}
+.tab-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700;}
+.badge-est{font-size:9px;padding:1px 6px;background:#FEF3C7;border:1px solid #FCD34D;border-radius:3px;color:#92400E;margin-left:5px;vertical-align:middle;}
+
+/* DETAIL TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.dtbl{width:100%;border-collapse:collapse;font-size:12px;min-width:980px;}
+.dtbl thead th{background:var(--navy);color:#fff;padding:9px 11px;text-align:right;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;z-index:2;}
+.dtbl thead th:first-child{text-align:left;position:sticky;left:0;z-index:3;min-width:205px;background:var(--navy);}
+.dtbl td{padding:8px 11px;border-bottom:1px solid var(--border);text-align:right;font-family:'Montserrat',sans-serif;font-size:11px;white-space:nowrap;}
+.dtbl td:first-child{text-align:left;font-family:'Noto Sans JP',sans-serif;font-size:11px;position:sticky;left:0;z-index:1;background:inherit;}
+.dtbl tr:nth-child(even) td{background:#FAFBFC;}
+.dtbl tr:nth-child(even) td:first-child{background:#FAFBFC;}
+.dtbl tr:nth-child(odd) td:first-child{background:#fff;}
+.dtbl tr:hover td{background:#F0F4FF!important;}
+
+/* Section header rows */
+.dtbl tr.shdr td{background:var(--navy2)!important;color:#fff;font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:11px;letter-spacing:.8px;padding:7px 11px;}
+
+/* Total rows */
+.dtbl tr.ttl td{background:#EFF6FF!important;color:var(--blue);font-weight:700;border-top:2px solid #BFDBFE;}
+.dtbl tr.ttl td:first-child{background:#EFF6FF!important;}
+.dtbl tr.grs td{background:#ECFDF5!important;color:var(--green);font-weight:700;border-top:2px solid #A7F3D0;}
+.dtbl tr.grs td:first-child{background:#ECFDF5!important;}
+.dtbl tr.opr td{background:#FFF7ED!important;color:#C2410C;font-weight:900;border-top:2px solid #FED7AA;font-size:12px;}
+.dtbl tr.opr td:first-child{background:#FFF7ED!important;}
+
+/* Annual total col */
+.dtbl td.ann,.dtbl th.ann{background:rgba(26,43,60,0.05)!important;font-weight:700;border-left:2px solid var(--border2);}
+.dtbl tr.ttl td.ann{background:#D6E8F8!important;}
+.dtbl tr.grs td.ann{background:#D1FAE5!important;}
+.dtbl tr.opr td.ann{background:#FFEDD5!important;}
+
+/* P&L TABLE */
+.pnl{width:100%;border-collapse:collapse;font-size:13px;}
+.pnl th{background:var(--navy);color:#fff;padding:11px 18px;text-align:right;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;}
+.pnl th:first-child{text-align:left;}
+.pnl td{padding:11px 18px;border-bottom:1px solid var(--border);text-align:right;font-family:'Montserrat',sans-serif;font-size:12px;}
+.pnl td:first-child{text-align:left;font-family:'Noto Sans JP',sans-serif;}
+.pnl tr:hover td{background:#F8FAFC;}
+.pnl tr.pb td{font-weight:700;}
+.pnl tr.pg td{background:#ECFDF5;color:var(--green);font-weight:700;border-top:2px solid #6EE7B7;}
+.pnl tr.pp td{background:#EFF6FF;color:var(--blue);font-weight:700;}
+.pnl tr.po td{background:#FFF7ED;color:#C2410C;font-weight:900;font-size:14px;border-top:2px solid #FED7AA;}
+.pnl .est{color:#9CA3AF;font-style:italic;}
+.pnl-note{font-size:10px;color:var(--text3);margin-top:8px;text-align:right;}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.sep{height:1px;background:var(--border);}
+
+footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:36px 24px;font-size:11px;letter-spacing:1px;}
+footer strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--gold-lt);margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div style="position:relative;z-index:1;">
+    <div class="hero-badge">H2technology — MEO事業部</div>
+    <h1>４期分<em>予算</em>計画</h1>
+    <p class="hero-sub">2025年度 — 2028年度 &nbsp;|&nbsp; BUDGET PLAN</p>
+    <div class="hero-line"></div>
+    <div class="kpi-row" id="heroKpi"></div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="section reveal">
+  <div class="sec-tag">01 — Revenue Overview</div>
+  <h2 class="sec-title">売上・利益 <em>推移</em></h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">年度別 売上高 ／ 営業利益（万円）</div>
+      <canvas id="annualBar"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">2025年度 売上構成比</div>
+      <canvas id="revPie"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<div class="alt-wrap reveal">
+<section class="section" style="max-width:1100px;">
+  <div class="sec-tag">02 — Profit & Loss Summary</div>
+  <h2 class="sec-title">損益 <em>サマリー</em></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="pnl" id="pnlTable"></table>
+  </div>
+  <p class="pnl-note">※ 2027・2028年度のコストは2026年度実績をベースに試算</p>
+</section>
+</div>
+
+<div class="sep"></div>
+
+<section class="section reveal">
+  <div class="sec-tag">03 — Cost Structure</div>
+  <h2 class="sec-title">費用 <em>構成</em></h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">年度別 費用内訳（万円）</div>
+      <canvas id="costBar"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">年度別 労働分配率</div>
+      <canvas id="laborBar"></canvas>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<div class="alt-wrap reveal">
+<section class="section" style="max-width:1440px;">
+  <div class="sec-tag">04 — Monthly Detail</div>
+  <h2 class="sec-title">月次 <em>詳細</em></h2>
+  <div class="tabs" id="yearTabs">
+    <button class="tab-btn active" onclick="switchYear(0,this)">2025年度</button>
+    <button class="tab-btn" onclick="switchYear(1,this)">2026年度</button>
+    <button class="tab-btn" onclick="switchYear(2,this)">2027年度 <span class="badge-est">コスト試算</span></button>
+    <button class="tab-btn" onclick="switchYear(3,this)">2028年度 <span class="badge-est">コスト試算</span></button>
+  </div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title" id="mChartTitle">2025年度　月次推移（万円）</div>
+    <canvas id="monthlyLine" style="max-height:240px;"></canvas>
+  </div>
+  <div class="tbl-wrap">
+    <table class="dtbl" id="detailTable"></table>
+  </div>
+</section>
+</div>
+
+<div class="sep"></div>
+
+<footer>
+  <strong>H2TECHNOLOGY — MEO事業部</strong>
+  <p>本資料はMEO事業部 内部予算計画資料です。取り扱いにご注意ください。</p>
+</footer>
+
+<script>
+// ================================================================
+// DATA  ── 更新時は RAW オブジェクトを差し替えてください
+// ================================================================
+const RAW={"months":["4月","5月","6月","7月","8月","9月","10月","11月","12月","1月","2月","3月"],"years":["2025年度","2026年度","2027年度","2028年度"],"fy2025":[{"ri":4,"label":"既存売上成果直営","section":"売上","is_total":false,"is_profit":false,"vals":[129000,120000,120000,120000,120000,120000,120000,120000,120000,120000,120000,120000]},{"ri":5,"label":"既存売上成果OEM","section":"売上","is_total":false,"is_profit":false,"vals":[158800,150000,150000,150000,150000,150000,150000,150000,150000,150000,150000,150000]},{"ri":6,"label":"既存売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[8200000,7995000,7790000,7590125,7395375,7205622,7020738,6840597,6665079,6494064,6327437,4882000]},{"ri":7,"label":"新規売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[300000,600000,900000,1200000,1500000,1800000,2100000,2400000,2700000,3000000,3300000,2000000]},{"ri":8,"label":"エンタープライズ","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,540000]},{"ri":9,"label":"MEO（単発系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":10,"label":"OEM卸（ツール卸）","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,580000]},{"ri":11,"label":"新規ツール提供（OEM）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":12,"label":"出光　口コミ","section":"売上","is_total":false,"is_profit":false,"vals":[328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,320000]},{"ri":13,"label":"ASP案件","section":"売上","is_total":false,"is_profit":false,"vals":[1000000,1000000,1000000,1000000,1000000,1000000,1000000,1000000,1000000,1000000,1000000,390000]},{"ri":14,"label":"ワンエイト案件","section":"売上","is_total":false,"is_profit":false,"vals":[88500,88500,88500,88500,88500,88500,88500,88500,88500,88500,88500,800000]},{"ri":15,"label":"他社商材","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":16,"label":"ストリートビュー","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":17,"label":"WEB案件（HP・広告）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":18,"label":"アップセル（AIO系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":19,"label":"生活の木","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,280000]},{"ri":20,"label":"リース手数料","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":21,"label":"既存顧客OP付帯","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":49,"label":"▶ 売上高合計","section":"売上合計","is_total":true,"is_profit":false,"vals":[11204620,11281820,11376820,11476945,11582195,11692442,11807558,11927417,12051899,12180884,12314257,10062000]},{"ri":50,"label":"CS外注費（投稿・サイテーション）","section":"原価","is_total":false,"is_profit":false,"vals":[194400,236400,278400,260400,362400,404400,446400,488400,530400,572400,614400,134400]},{"ri":51,"label":"AWS","section":"原価","is_total":false,"is_profit":false,"vals":[303550,303550,303550,303550,303550,303550,303550,303550,303550,303550,303550,303550]},{"ri":52,"label":"撮影原価","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":53,"label":"WEB関係政策原価","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":54,"label":"開発外注費（イーサンテクノロジー）","section":"原価","is_total":false,"is_profit":false,"vals":[455000,455000,455000,455000,455000,455000,455000,455000,455000,455000,455000,455000]},{"ri":89,"label":"▶ 原価合計","section":"原価合計","is_total":true,"is_profit":false,"vals":[952950,994950,1036950,1018950,1120950,1162950,1204950,1246950,1288950,1330950,1372950,892950]},{"ri":90,"label":"▶ 売上総利益","section":"利益","is_total":true,"is_profit":true,"vals":[10251670,10286870,10339870,10457995,10461245,10529492,10602608,10680467,10762949,10849934,10941307,9169050]},{"ri":92,"label":"給料手当","section":"人件費","is_total":false,"is_profit":false,"vals":[3938293,3938293,3938293,3938293,3938293,3938293,3938293,3938293,3938293,3938293,3938293,3938293]},{"ri":93,"label":"賞与引当金繰入額","section":"人件費","is_total":false,"is_profit":false,"vals":[492287,492287,492287,492287,492287,492287,492287,492287,492287,492287,492287,492287]},{"ri":94,"label":"雑給","section":"人件費","is_total":false,"is_profit":false,"vals":[447600,447600,447600,507600,447600,447600,447600,447600,447600,447600,447600,447600]},{"ri":95,"label":"派遣社員費","section":"人件費","is_total":false,"is_profit":false,"vals":[800000,450000,450000,450000,450000,450000,450000,450000,450000,450000,450000,450000]},{"ri":96,"label":"賞与","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":97,"label":"退職給付費用","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":98,"label":"法定福利費","section":"人件費","is_total":false,"is_profit":false,"vals":[787659,787659,787659,787659,787659,787659,787659,787659,787659,787659,787659,787659]},{"ri":99,"label":"福利厚生費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":100,"label":"研修費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":101,"label":"採用費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":102,"label":"通勤手当","section":"人件費","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":103,"label":"人件費按分","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":104,"label":"▶ 人件費合計","section":"人件費合計","is_total":true,"is_profit":false,"vals":[6665838,6315838,6315838,6375838,6315838,6315838,6315838,6315838,6315838,6315838,6315838,6315838]},{"ri":106,"label":"水道光熱費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":107,"label":"修繕費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":108,"label":"地代家賃","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":109,"label":"賃借料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":110,"label":"リース料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":117,"label":"販売促進費","section":"販管費","is_total":false,"is_profit":false,"vals":[205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000]},{"ri":118,"label":"広告宣伝費","section":"販管費","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":119,"label":"広告・販売費按分","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":121,"label":"通信費","section":"販管費","is_total":false,"is_profit":false,"vals":[13936,13936,13936,13936,13936,13936,13936,13936,13936,13936,13936,13936]},{"ri":124,"label":"システム使用料","section":"販管費","is_total":false,"is_profit":false,"vals":[5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000]},{"ri":127,"label":"旅費交通費","section":"販管費","is_total":false,"is_profit":false,"vals":[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000]},{"ri":141,"label":"支払手数料","section":"販管費","is_total":false,"is_profit":false,"vals":[58000,58000,58000,58000,58000,58000,58000,58000,58000,58000,58000,58000]},{"ri":143,"label":"業務委託費","section":"販管費","is_total":false,"is_profit":false,"vals":[165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000]},{"ri":147,"label":"▶ 販管費計","section":"販管費合計","is_total":true,"is_profit":false,"vals":[966936,966936,966936,966936,966936,966936,966936,966936,966936,966936,966936,966936]},{"ri":149,"label":"▶ 総販管費","section":"総販管費","is_total":true,"is_profit":false,"vals":[7632774,7282774,7282774,7342774,7282774,7282774,7282774,7282774,7282774,7282774,7282774,7282774]},{"ri":151,"label":"▶ 営業利益","section":"営業利益","is_total":true,"is_profit":true,"vals":[2618896,3004096,3057096,3115221,3178471,3246718,3319833,3397693,3480174,3567159,3658532,1886276]}],"fy2026":[{"ri":4,"label":"既存売上成果直営","section":"売上","is_total":false,"is_profit":false,"vals":[100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000]},{"ri":5,"label":"既存売上成果OEM","section":"売上","is_total":false,"is_profit":false,"vals":[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000]},{"ri":6,"label":"既存売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[6800000,6677950,6507950,6341001,6178302,6019777,5865320,5714825,5568192,5425322,5286117,5150484]},{"ri":7,"label":"新規売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[150000,325000,500000,675000,955000,1235000,1515000,1795000,2075000,2355000,2635000,2915000]},{"ri":8,"label":"エンタープライズ","section":"売上","is_total":false,"is_profit":false,"vals":[540000,540000,540000,540000,540000,540000,540000,540000,540000,540000,540000,540000]},{"ri":9,"label":"MEO（単発系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":10,"label":"OEM卸（ツール卸）","section":"売上","is_total":false,"is_profit":false,"vals":[580000,580000,580000,580000,580000,580000,580000,580000,580000,580000,580000,580000]},{"ri":11,"label":"新規ツール提供（OEM）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,200000,200000,200000,300000,300000,300000,400000,400000,400000,400000]},{"ri":12,"label":"出光　口コミ","section":"売上","is_total":false,"is_profit":false,"vals":[350000,350000,350000,350000,350000,350000,350000,350000,350000,350000,350000,350000]},{"ri":13,"label":"ASP案件","section":"売上","is_total":false,"is_profit":false,"vals":[250000,200000,150000,100000,50000,0,0,0,0,0,0,0]},{"ri":14,"label":"ワンエイト案件","section":"売上","is_total":false,"is_profit":false,"vals":[700000,700000,700000,700000,700000,700000,700000,700000,700000,700000,700000,700000]},{"ri":15,"label":"他社商材","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":16,"label":"ストリートビュー","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,3000000]},{"ri":17,"label":"WEB案件（HP・広告）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":18,"label":"アップセル（AIO系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,600000,600000,600000,600000,600000,600000,1200000]},{"ri":19,"label":"生活の木","section":"売上","is_total":false,"is_profit":false,"vals":[280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000]},{"ri":20,"label":"リース手数料","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,100000,0,0,100000,0,0,100000,0,0,100000]},{"ri":21,"label":"既存顧客OP付帯","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,30000,60000,90000,120000,150000,180000,210000,240000,270000,300000]},{"ri":49,"label":"▶ 売上高合計","section":"売上合計","is_total":true,"is_profit":false,"vals":[9800000,9802950,10087950,9976001,10073302,10974777,11030320,11189825,11553192,11620322,11791117,15665484]},{"ri":50,"label":"CS外注費（投稿・サイテーション）","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":51,"label":"AWS","section":"原価","is_total":false,"is_profit":false,"vals":[420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000]},{"ri":52,"label":"撮影原価","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,2700000]},{"ri":53,"label":"WEB関係政策原価","section":"原価","is_total":false,"is_profit":false,"vals":[300000,300000,0,0,0,0,0,0,0,0,0,0]},{"ri":54,"label":"開発外注費（イーサンテクノロジー）","section":"原価","is_total":false,"is_profit":false,"vals":[1056250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250]},{"ri":89,"label":"▶ 原価合計","section":"原価合計","is_total":true,"is_profit":false,"vals":[1776250,1438250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,3838250]},{"ri":90,"label":"▶ 売上総利益","section":"利益","is_total":true,"is_profit":true,"vals":[8023750,8364700,8949700,8837751,8935052,9836527,9892070,10051575,10414942,10482072,10652867,11827234]},{"ri":92,"label":"給料手当","section":"人件費","is_total":false,"is_profit":false,"vals":[3200000,3460000,3460000,3460000,3460000,3460000,3460000,3770000,3770000,3770000,3770000,3770000]},{"ri":93,"label":"賞与引当金繰入額","section":"人件費","is_total":false,"is_profit":false,"vals":[400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000]},{"ri":94,"label":"雑給","section":"人件費","is_total":false,"is_profit":false,"vals":[700000,700000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":95,"label":"派遣社員費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":96,"label":"賞与","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":97,"label":"退職給付費用","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":98,"label":"法定福利費","section":"人件費","is_total":false,"is_profit":false,"vals":[640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000]},{"ri":99,"label":"福利厚生費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":100,"label":"研修費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":101,"label":"採用費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":102,"label":"通勤手当","section":"人件費","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":103,"label":"人件費按分","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":104,"label":"▶ 人件費合計","section":"人件費合計","is_total":true,"is_profit":false,"vals":[5140000,5400000,5200000,5200000,5200000,5200000,5200000,5510000,5510000,5510000,5510000,5510000]},{"ri":106,"label":"水道光熱費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":107,"label":"修繕費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":108,"label":"地代家賃","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":109,"label":"賃借料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":110,"label":"リース料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":117,"label":"販売促進費","section":"販管費","is_total":false,"is_profit":false,"vals":[205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000]},{"ri":118,"label":"広告宣伝費","section":"販管費","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":119,"label":"広告・販売費按分","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":121,"label":"通信費","section":"販管費","is_total":false,"is_profit":false,"vals":[15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000]},{"ri":124,"label":"システム使用料","section":"販管費","is_total":false,"is_profit":false,"vals":[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000]},{"ri":127,"label":"旅費交通費","section":"販管費","is_total":false,"is_profit":false,"vals":[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000]},{"ri":141,"label":"支払手数料","section":"販管費","is_total":false,"is_profit":false,"vals":[500,500,500,500,500,500,500,500,500,500,500,500]},{"ri":143,"label":"業務委託費","section":"販管費","is_total":false,"is_profit":false,"vals":[165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000]},{"ri":147,"label":"▶ 販管費計","section":"販管費合計","is_total":true,"is_profit":false,"vals":[955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500]},{"ri":149,"label":"▶ 総販管費","section":"総販管費","is_total":true,"is_profit":false,"vals":[6095500,6355500,6155500,6155500,6155500,6155500,6155500,6465500,6465500,6465500,6465500,6465500]},{"ri":151,"label":"▶ 営業利益","section":"営業利益","is_total":true,"is_profit":true,"vals":[1928250,2009200,2794200,2682251,2779552,3681027,3736570,3586075,3949442,4016572,4187367,5361734]}],"fy2027":[{"ri":4,"label":"既存売上成果直営","section":"売上","is_total":false,"is_profit":false,"vals":[100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000]},{"ri":5,"label":"既存売上成果OEM","section":"売上","is_total":false,"is_profit":false,"vals":[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000]},{"ri":6,"label":"既存売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[7933331,7804569,7606236,7411121,7220966,7035688,6855163,6679271,6507892,6340910,6178213,6019690]},{"ri":7,"label":"新規売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[240000,420000,600000,780000,960000,1140000,1320000,1500000,1680000,1860000,2040000,2220000]},{"ri":8,"label":"エンタープライズ","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":9,"label":"MEO（単発系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":10,"label":"OEM卸（ツール卸）","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":11,"label":"新規ツール提供（OEM）","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,600000,600000,600000,700000,700000,700000,800000,800000,800000,900000]},{"ri":12,"label":"出光　口コミ","section":"売上","is_total":false,"is_profit":false,"vals":[328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,328320]},{"ri":13,"label":"ASP案件","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":14,"label":"ワンエイト案件","section":"売上","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":15,"label":"他社商材","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":16,"label":"ストリートビュー","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":17,"label":"WEB案件（HP・広告）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":18,"label":"アップセル（AIO系）","section":"売上","is_total":false,"is_profit":false,"vals":[1200000,1200000,1200000,1200000,1200000,1500000,1500000,1500000,1500000,1500000,1500000,1800000]},{"ri":19,"label":"生活の木","section":"売上","is_total":false,"is_profit":false,"vals":[280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000]},{"ri":20,"label":"リース手数料","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":21,"label":"既存顧客OP付帯","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":49,"label":"▶ 売上高合計","section":"売上合計","is_total":true,"is_profit":false,"vals":[11831651,11882889,11964556,11949441,11939286,12334008,12333483,12337591,12446212,12459230,12476533,12898010]},{"ri":50,"label":"CS外注費（投稿・サイテーション）","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":51,"label":"AWS","section":"原価","is_total":false,"is_profit":false,"vals":[420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000]},{"ri":52,"label":"撮影原価","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,2700000]},{"ri":53,"label":"WEB関係政策原価","section":"原価","is_total":false,"is_profit":false,"vals":[300000,300000,0,0,0,0,0,0,0,0,0,0]},{"ri":54,"label":"開発外注費（イーサンテクノロジー）","section":"原価","is_total":false,"is_profit":false,"vals":[1056250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250]},{"ri":89,"label":"▶ 原価合計","section":"原価合計","is_total":true,"is_profit":false,"vals":[1776250,1438250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,3838250]},{"ri":90,"label":"▶ 売上総利益","section":"利益","is_total":true,"is_profit":true,"vals":[10055401,10444639,10826306,10811191,10801036,11195758,11195233,11199341,11307962,11320980,11338283,9059760]},{"ri":92,"label":"給料手当","section":"人件費","is_total":false,"is_profit":false,"vals":[3200000,3460000,3460000,3460000,3460000,3460000,3460000,3770000,3770000,3770000,3770000,3770000]},{"ri":93,"label":"賞与引当金繰入額","section":"人件費","is_total":false,"is_profit":false,"vals":[400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000]},{"ri":94,"label":"雑給","section":"人件費","is_total":false,"is_profit":false,"vals":[700000,700000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":95,"label":"派遣社員費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":96,"label":"賞与","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":97,"label":"退職給付費用","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":98,"label":"法定福利費","section":"人件費","is_total":false,"is_profit":false,"vals":[640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000]},{"ri":99,"label":"福利厚生費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":100,"label":"研修費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":101,"label":"採用費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":102,"label":"通勤手当","section":"人件費","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":103,"label":"人件費按分","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":104,"label":"▶ 人件費合計","section":"人件費合計","is_total":true,"is_profit":false,"vals":[5140000,5400000,5200000,5200000,5200000,5200000,5200000,5510000,5510000,5510000,5510000,5510000]},{"ri":106,"label":"水道光熱費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":107,"label":"修繕費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":108,"label":"地代家賃","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":109,"label":"賃借料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":110,"label":"リース料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":117,"label":"販売促進費","section":"販管費","is_total":false,"is_profit":false,"vals":[205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000]},{"ri":118,"label":"広告宣伝費","section":"販管費","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":119,"label":"広告・販売費按分","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":121,"label":"通信費","section":"販管費","is_total":false,"is_profit":false,"vals":[15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000]},{"ri":124,"label":"システム使用料","section":"販管費","is_total":false,"is_profit":false,"vals":[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000]},{"ri":127,"label":"旅費交通費","section":"販管費","is_total":false,"is_profit":false,"vals":[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000]},{"ri":141,"label":"支払手数料","section":"販管費","is_total":false,"is_profit":false,"vals":[500,500,500,500,500,500,500,500,500,500,500,500]},{"ri":143,"label":"業務委託費","section":"販管費","is_total":false,"is_profit":false,"vals":[165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000]},{"ri":147,"label":"▶ 販管費計","section":"販管費合計","is_total":true,"is_profit":false,"vals":[955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500]},{"ri":149,"label":"▶ 総販管費","section":"総販管費","is_total":true,"is_profit":false,"vals":[6095500,6355500,6155500,6155500,6155500,6155500,6155500,6465500,6465500,6465500,6465500,6465500]},{"ri":151,"label":"▶ 営業利益","section":"営業利益","is_total":true,"is_profit":true,"vals":[3959901,4089139,4670806,4655691,4645536,5040258,5039733,4733841,4842462,4855480,4872783,2594260]}],"fy2028":[{"ri":4,"label":"既存売上成果直営","section":"売上","is_total":false,"is_profit":false,"vals":[100000,120000,120000,120000,120000,120000,120000,120000,120000,120000,120000,120000]},{"ri":5,"label":"既存売上成果OEM","section":"売上","is_total":false,"is_profit":false,"vals":[50000,150000,150000,150000,150000,150000,150000,150000,150000,150000,150000,150000]},{"ri":6,"label":"既存売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[8085235,7934743,7732612,7534243,7340928,7152572,6969049,6790234,6616008,6446252,6280852,6119696]},{"ri":7,"label":"新規売上固定","section":"売上","is_total":false,"is_profit":false,"vals":[180000,360000,540000,720000,900000,1080000,1260000,1440000,1620000,1800000,1980000,2160000]},{"ri":8,"label":"エンタープライズ","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":9,"label":"MEO（単発系）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":10,"label":"OEM卸（ツール卸）","section":"売上","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":11,"label":"新規ツール提供（OEM）","section":"売上","is_total":false,"is_profit":false,"vals":[900000,900000,1000000,1000000,1000000,1100000,1100000,1100000,1200000,1200000,1200000,1300000]},{"ri":12,"label":"出光　口コミ","section":"売上","is_total":false,"is_profit":false,"vals":[328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,328320,328320]},{"ri":13,"label":"ASP案件","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":14,"label":"ワンエイト案件","section":"売上","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":15,"label":"他社商材","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":16,"label":"ストリートビュー","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":17,"label":"WEB案件（HP・広告）","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":18,"label":"アップセル（AIO系）","section":"売上","is_total":false,"is_profit":false,"vals":[1800000,1800000,1800000,1800000,1800000,2000000,2000000,2000000,2000000,2000000,2000000,2200000]},{"ri":19,"label":"生活の木","section":"売上","is_total":false,"is_profit":false,"vals":[280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000,280000]},{"ri":20,"label":"リース手数料","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":21,"label":"既存顧客OP付帯","section":"売上","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":49,"label":"▶ 売上高合計","section":"売上合計","is_total":true,"is_profit":false,"vals":[12923555,13073063,13150932,13132563,13119248,13410892,13407369,13408554,13514328,13524572,13539172,13858016]},{"ri":50,"label":"CS外注費（投稿・サイテーション）","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":51,"label":"AWS","section":"原価","is_total":false,"is_profit":false,"vals":[420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000,420000]},{"ri":52,"label":"撮影原価","section":"原価","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,2700000]},{"ri":53,"label":"WEB関係政策原価","section":"原価","is_total":false,"is_profit":false,"vals":[300000,300000,0,0,0,0,0,0,0,0,0,0]},{"ri":54,"label":"開発外注費（イーサンテクノロジー）","section":"原価","is_total":false,"is_profit":false,"vals":[1056250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250,718250]},{"ri":89,"label":"▶ 原価合計","section":"原価合計","is_total":true,"is_profit":false,"vals":[1776250,1438250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,1138250,3838250]},{"ri":90,"label":"▶ 売上総利益","section":"利益","is_total":true,"is_profit":true,"vals":[11147305,11634813,12012682,11994313,11980998,12272642,12269119,12270304,12376078,12386322,12400922,10019766]},{"ri":92,"label":"給料手当","section":"人件費","is_total":false,"is_profit":false,"vals":[3200000,3460000,3460000,3460000,3460000,3460000,3460000,3770000,3770000,3770000,3770000,3770000]},{"ri":93,"label":"賞与引当金繰入額","section":"人件費","is_total":false,"is_profit":false,"vals":[400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000,400000]},{"ri":94,"label":"雑給","section":"人件費","is_total":false,"is_profit":false,"vals":[700000,700000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":95,"label":"派遣社員費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":96,"label":"賞与","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":97,"label":"退職給付費用","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":98,"label":"法定福利費","section":"人件費","is_total":false,"is_profit":false,"vals":[640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000,640000]},{"ri":99,"label":"福利厚生費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":100,"label":"研修費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":101,"label":"採用費","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":102,"label":"通勤手当","section":"人件費","is_total":false,"is_profit":false,"vals":[200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000,200000]},{"ri":103,"label":"人件費按分","section":"人件費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":104,"label":"▶ 人件費合計","section":"人件費合計","is_total":true,"is_profit":false,"vals":[5140000,5400000,5200000,5200000,5200000,5200000,5200000,5510000,5510000,5510000,5510000,5510000]},{"ri":106,"label":"水道光熱費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":107,"label":"修繕費","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":108,"label":"地代家賃","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":109,"label":"賃借料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":110,"label":"リース料","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":117,"label":"販売促進費","section":"販管費","is_total":false,"is_profit":false,"vals":[205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000,205000]},{"ri":118,"label":"広告宣伝費","section":"販管費","is_total":false,"is_profit":false,"vals":[500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000,500000]},{"ri":119,"label":"広告・販売費按分","section":"販管費","is_total":false,"is_profit":false,"vals":[0,0,0,0,0,0,0,0,0,0,0,0]},{"ri":121,"label":"通信費","section":"販管費","is_total":false,"is_profit":false,"vals":[15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000,15000]},{"ri":124,"label":"システム使用料","section":"販管費","is_total":false,"is_profit":false,"vals":[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000]},{"ri":127,"label":"旅費交通費","section":"販管費","is_total":false,"is_profit":false,"vals":[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000]},{"ri":141,"label":"支払手数料","section":"販管費","is_total":false,"is_profit":false,"vals":[500,500,500,500,500,500,500,500,500,500,500,500]},{"ri":143,"label":"業務委託費","section":"販管費","is_total":false,"is_profit":false,"vals":[165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000,165000]},{"ri":147,"label":"▶ 販管費計","section":"販管費合計","is_total":true,"is_profit":false,"vals":[955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500,955500]},{"ri":149,"label":"▶ 総販管費","section":"総販管費","is_total":true,"is_profit":false,"vals":[6095500,6355500,6155500,6155500,6155500,6155500,6155500,6465500,6465500,6465500,6465500,6465500]},{"ri":151,"label":"▶ 営業利益","section":"営業利益","is_total":true,"is_profit":true,"vals":[5051805,5279313,5857182,5838813,5825498,6117142,6113619,5804804,5910578,5920822,5935422,3554266]}],"rev_pie":[{"label":"既存売上固定","value":84406035},{"label":"新規売上固定","value":21800000},{"label":"OEM卸（ツール卸）","value":6080000},{"label":"エンタープライズ","value":6040000},{"label":"出光口コミ","value":3931520},{"label":"ASP案件","value":11390000},{"label":"ワンエイト案件","value":1773500},{"label":"アップセル（AIO系）","value":0},{"label":"生活の木","value":280000}],"annual":{"売上高合計":[138958857,133565240,146852890,160062264],"原価合計":[13625400,17297000,17297000,17297000],"売上総利益":[125333457,116268240,129555890,142765264],"人件費合計":[76200056,64090000,64090000,64090000],"総販管費":[87803288,75556000,75556000,75556000],"営業利益":[37530165,40712240,53999890,67209264]}};
+const MONTHS=RAW.months, YEARS=RAW.years;
+const YD=[RAW.fy2025,RAW.fy2026,RAW.fy2027,RAW.fy2028];
+
+function fmt(n){
+  if(!n||n===0)return'－';
+  const a=Math.abs(n),s=n<0?'-':'';
+  if(a>=100000000)return s+(a/100000000).toFixed(1)+'億';
+  if(a>=10000)return s+Math.round(a/10000).toLocaleString()+'万';
+  return s+a.toLocaleString();
+}
+function fmtFull(n){
+  if(!n||n===0)return'－';
+  return(n<0?'▲':'')+Math.abs(Math.round(n)).toLocaleString();
+}
+function row(yr,lbl){return yr.find(r=>r.label.includes(lbl));}
+function ann(yr,lbl){const r=row(yr,lbl);return r?r.vals.reduce((a,b)=>a+b,0):0;}
+
+// KPIs
+const kpis=[
+  {l:'4期合計売上',   v:YD.reduce((s,yr)=>s+ann(yr,'売上高合計'),0)},
+  {l:'2025年度売上',  v:ann(YD[0],'売上高合計')},
+  {l:'2026年度売上',  v:ann(YD[1],'売上高合計')},
+  {l:'2025年度営業利益',v:ann(YD[0],'営業利益')},
+  {l:'2026年度営業利益',v:ann(YD[1],'営業利益')},
+  {l:'2028年度営業利益',v:ann(YD[3],'営業利益')},
+];
+document.getElementById('heroKpi').innerHTML=kpis.map(k=>`
+<div class="kpi-card">
+  <div class="kpi-label">${k.l}</div>
+  <div class="kpi-value">${fmt(k.v)}</div>
+  <div class="kpi-unit">（予算）</div>
+</div>`).join('');
+
+// Chart defaults
+Chart.defaults.font.family="'Montserrat','Noto Sans JP',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#64748B';
+const grid={color:'rgba(0,0,0,0.045)',borderColor:'transparent',tickColor:'transparent'};
+function tt(cb=null){
+  return{backgroundColor:'rgba(26,43,60,0.94)',borderColor:'#E2E8F0',borderWidth:1,
+    titleColor:'#F5A623',bodyColor:'#E8EDF3',padding:11,
+    ...(cb?{callbacks:cb}:{})};
+}
+
+// Annual Bar
+new Chart(document.getElementById('annualBar'),{
+  type:'bar',
+  data:{labels:YEARS,datasets:[
+    {label:'売上高合計',data:YD.map(yr=>Math.round(ann(yr,'売上高合計')/10000)),
+     backgroundColor:['rgba(37,99,235,0.75)','rgba(37,99,235,0.75)','rgba(37,99,235,0.38)','rgba(37,99,235,0.28)'],
+     borderColor:'#2563EB',borderWidth:1,borderRadius:6},
+    {label:'営業利益',data:YD.map(yr=>Math.round(ann(yr,'営業利益')/10000)),
+     backgroundColor:['rgba(5,150,105,0.7)','rgba(5,150,105,0.7)','rgba(5,150,105,0.38)','rgba(5,150,105,0.28)'],
+     borderColor:'#059669',borderWidth:1,borderRadius:6},
+  ]},
+  options:{responsive:true,
+    plugins:{legend:{labels:{color:'#64748B'}},tooltip:tt({label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}万円`})},
+    scales:{x:{grid,ticks:{color:'#64748B'}},y:{grid,ticks:{color:'#64748B',callback:v=>v.toLocaleString()+'万'}}}}
+});
+
+// Rev Pie
+const PC=['#1E3A5F','#2563EB','#D4920A','#059669','#DC2626','#7C3AED','#0891B2','#EA580C','#64748B'];
+new Chart(document.getElementById('revPie'),{
+  type:'doughnut',
+  data:{labels:RAW.rev_pie.map(r=>r.label),datasets:[{
+    data:RAW.rev_pie.map(r=>r.value),
+    backgroundColor:PC.map(c=>c+'CC'),borderColor:PC,borderWidth:2,hoverOffset:6
+  }]},
+  options:{responsive:true,cutout:'56%',
+    plugins:{legend:{position:'right',labels:{color:'#64748B',boxWidth:11,padding:8,font:{size:10}}},
+      tooltip:tt({label:c=>` ${Math.round(c.parsed/10000).toLocaleString()}万円`})}}
+});
+
+// P&L Table
+const PNL=[
+  {k:'売上高合計', c:'pp pb',  l:'売上高合計'},
+  {k:'原価合計',   c:'',       l:'　原価合計'},
+  {k:'売上総利益', c:'pg',     l:'売上総利益'},
+  {k:'人件費合計', c:'',       l:'　人件費合計'},
+  {k:'総販管費',   c:'pb',     l:'　総販管費'},
+  {k:'営業利益',   c:'po',     l:'営業利益'},
+];
+let th='<thead><tr><th>項目</th>';
+YEARS.forEach((y,i)=>{th+=`<th>${y}${i>=2?'<br><small style="opacity:.55;font-size:9px;">※コスト試算</small>':''}</th>`;});
+th+='</tr></thead><tbody>';
+let tb=PNL.map(def=>{
+  let tr=`<tr class="${def.c}"><td>${def.l}</td>`;
+  YD.forEach((yr,i)=>{
+    const v=ann(yr,def.k);
+    tr+=`<td class="${i>=2?'est':''}">¥${Math.round(v).toLocaleString()}</td>`;
+  });
+  return tr+'</tr>';
+}).join('');
+document.getElementById('pnlTable').innerHTML=th+tb+'</tbody>';
+
+// Cost Bar
+new Chart(document.getElementById('costBar'),{
+  type:'bar',
+  data:{labels:YEARS,datasets:[
+    {label:'原価合計',   data:YD.map(yr=>Math.round(ann(yr,'原価合計')/10000)),
+     backgroundColor:'rgba(220,38,38,0.6)',borderColor:'#DC2626',borderWidth:1,borderRadius:4,stack:'s'},
+    {label:'人件費合計', data:YD.map(yr=>Math.round(ann(yr,'人件費合計')/10000)),
+     backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563EB',borderWidth:1,borderRadius:4,stack:'s'},
+    {label:'その他販管費',data:YD.map(yr=>Math.round((ann(yr,'総販管費')-ann(yr,'人件費合計'))/10000)),
+     backgroundColor:'rgba(124,58,237,0.5)',borderColor:'#7C3AED',borderWidth:1,borderRadius:4,stack:'s'},
+  ]},
+  options:{responsive:true,
+    plugins:{legend:{labels:{color:'#64748B'}},tooltip:tt({label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}万円`})},
+    scales:{x:{grid,stacked:true,ticks:{color:'#64748B'}},y:{grid,stacked:true,ticks:{color:'#64748B',callback:v=>v.toLocaleString()+'万'}}}}
+});
+
+// Labor Rate
+const lr=YD.map(yr=>{
+  const p=ann(yr,'人件費合計'),s=ann(yr,'売上高合計');
+  return s>0?Math.round(p/s*1000)/10:0;
+});
+new Chart(document.getElementById('laborBar'),{
+  type:'bar',
+  data:{labels:YEARS,datasets:[{label:'労働分配率',data:lr,
+    backgroundColor:YEARS.map((_,i)=>i<2?'rgba(8,145,178,0.72)':'rgba(8,145,178,0.35)'),
+    borderColor:'#0891B2',borderWidth:1,borderRadius:6}]},
+  options:{responsive:true,
+    plugins:{legend:{labels:{color:'#64748B'}},tooltip:tt({label:c=>` 労働分配率: ${c.parsed.y}%`})},
+    scales:{x:{grid,ticks:{color:'#64748B'}},y:{grid,min:0,ticks:{color:'#64748B',callback:v=>v+'%'}}}}
+});
+
+// Monthly Line + Detail Table
+let mChart=null;
+
+function buildMChart(yi){
+  const yr=YD[yi];
+  const sRow=row(yr,'売上高合計'), pRow=row(yr,'営業利益');
+  const ctx=document.getElementById('monthlyLine');
+  if(mChart)mChart.destroy();
+  mChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:MONTHS,datasets:[
+      {label:'売上高合計',data:sRow.vals.map(v=>Math.round(v/10000)),
+       borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,0.07)',
+       borderWidth:2.5,pointBackgroundColor:'#2563EB',pointRadius:4,fill:true,tension:.4},
+      {label:'営業利益',data:pRow.vals.map(v=>Math.round(v/10000)),
+       borderColor:'#059669',backgroundColor:'rgba(5,150,105,0.07)',
+       borderWidth:2,pointBackgroundColor:'#059669',pointRadius:3,fill:true,tension:.4},
+    ]},
+    options:{responsive:true,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#64748B'}},tooltip:tt({label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}万円`})},
+      scales:{x:{grid,ticks:{color:'#64748B'}},y:{grid,ticks:{color:'#64748B',callback:v=>v.toLocaleString()+'万'}}}}
+  });
+}
+
+const SEC_HDR={
+  '売上':'売上 ( Revenue )',
+  '原価':'原価 ( Cost of Goods )',
+  '人件費':'人件費 ( Personnel )',
+  '販管費':'販管費 ( SG&A )',
+};
+
+function buildDtbl(yi){
+  const yr=YD[yi], isEst=yi>=2;
+  let lastSec='', html='<thead><tr><th>項目</th>';
+  MONTHS.forEach(m=>{html+=`<th>${m}</th>`;});
+  html+='<th class="ann">年間合計</th></tr></thead><tbody>';
+
+  yr.forEach(r=>{
+    const s=r.section;
+    if(SEC_HDR[s]&&s!==lastSec){
+      const note=isEst&&['原価','人件費','販管費'].includes(s)?' <span style="font-size:9px;opacity:.7;">（2026年度ベース試算）</span>':'';
+      html+=`<tr class="shdr"><td colspan="14">${SEC_HDR[s]}${note}</td></tr>`;
+      lastSec=s;
+    }else if(s!==lastSec){lastSec=s;}
+
+    let cls='';
+    const lbl=r.label.replace('▶ ','');
+    if(r.label.includes('売上高合計')||r.label.includes('原価合計')||
+       r.label.includes('人件費合計')||r.label.includes('販管費計')||
+       r.label.includes('総販管費')) cls='ttl';
+    if(r.label.includes('売上総利益')) cls='grs';
+    if(r.label.includes('営業利益'))  cls='opr';
+
+    const tot=r.vals.reduce((a,b)=>a+b,0);
+    html+=`<tr class="${cls}"><td>${lbl}</td>`;
+    r.vals.forEach(v=>{
+      const neg=v<0?' style="color:#DC2626;"':'';
+      html+=`<td${neg}>${v?fmtFull(v):'－'}</td>`;
+    });
+    html+=`<td class="ann">${tot?fmtFull(tot):'－'}</td></tr>`;
+  });
+  html+='</tbody>';
+  document.getElementById('detailTable').innerHTML=html;
+}
+
+function switchYear(idx,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mChartTitle').textContent=YEARS[idx]+'　月次推移（万円）';
+  buildMChart(idx);
+  buildDtbl(idx);
+}
+buildMChart(0);
+buildDtbl(0);
+
+// Scroll Reveal
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
